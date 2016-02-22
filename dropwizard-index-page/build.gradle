@@ -1,0 +1,27 @@
+apply plugin: 'java'
+apply plugin: 'com.palantir.baseline-checkstyle'
+apply plugin: 'com.palantir.baseline-eclipse'
+apply plugin: 'com.palantir.baseline-findbugs'
+apply plugin: 'com.palantir.baseline-idea'
+apply plugin: 'com.palantir.jacoco-coverage'
+
+apply from: "${rootDir}/gradle/publish.gradle"
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "com.github.spullara.mustache.java:compiler:$mustacheVersion"
+    compile "com.google.code.findbugs:annotations:$annotationVersion"
+    compile "io.dropwizard:dropwizard-core:$dropwizardVersion"
+
+    testCompile "io.dropwizard:dropwizard-assets:$dropwizardVersion"
+    testCompile "io.dropwizard:dropwizard-testing:$dropwizardVersion"
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.mockito:mockito-all:$mockitoVersion"
+}
+
+jacocoCoverage {
+    fileThreshold 0.0, "IndexPageBundle.java"
+}
