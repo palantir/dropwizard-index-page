@@ -15,7 +15,6 @@ plugins {
     id 'org.inferred.processors' version '1.1.5'
 }
 
-apply plugin: 'java'
 apply plugin: 'com.palantir.baseline-config'
 apply plugin: 'com.palantir.baseline-idea'
 
@@ -23,8 +22,21 @@ repositories {
     jcenter()
 }
 
-group 'com.palantir.dropwizard'
-version gitVersion()
+allprojects {
+    group 'com.palantir.dropwizard'
+    version gitVersion()
+}
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.palantir.baseline-checkstyle'
+    apply plugin: 'com.palantir.baseline-eclipse'
+    apply plugin: 'com.palantir.baseline-findbugs'
+    apply plugin: 'com.palantir.baseline-idea'
+
+    repositories {
+        jcenter()
+    }
+
+    sourceCompatibility = 1.7
+}
