@@ -1,0 +1,8 @@
+# ====================
+# Index Page Bundle
+# ====================
+server:
+  applicationConnectors:
+    - type: http
+      port: 8000
+  rootPath: /api/*

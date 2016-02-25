@@ -1,0 +1,4 @@
+rootProject.name = 'dropwizard-index-page'
+
+include "dropwizard-index-page"
+include "dropwizard-index-page-example"
