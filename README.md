@@ -1,3 +1,5 @@
+[![Circle CI](https://circleci.com/gh/palantir/dropwizard-index-page.svg?style=svg&circle-token=bff5c5b6816da034954a2fd7bb65bee9d6f9c33e)](https://circleci.com/gh/palantir/dropwizard-index-page)
+
 Dropwizard Index Page
 =====================
 
