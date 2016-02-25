@@ -1,5 +1,5 @@
-DropwizardIndexPage
-===================
+Dropwizard Index Page
+=====================
 
 A bundle that serves the *index* page for a single page application. It covers the following areas:
 
