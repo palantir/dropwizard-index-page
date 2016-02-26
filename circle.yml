@@ -6,7 +6,7 @@ machine:
 
 general:
   artifacts:
-    - build/libs
+    - dropwizard-index-page/build/libs
 
 test:
   override:
