@@ -41,6 +41,3 @@ subprojects {
     sourceCompatibility = 1.7
 }
 
-project(':dropwizard-index-page') {
-    apply from: "${rootDir}/gradle/publish.gradle"
-}
