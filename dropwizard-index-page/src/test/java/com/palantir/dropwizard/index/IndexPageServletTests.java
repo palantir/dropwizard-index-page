@@ -58,6 +58,7 @@ public final class IndexPageServletTests {
         new IndexPageServlet("");
     }
 
+    @SuppressFBWarnings("NP_NULL_PARAM_DEREF_NONVIRTUAL")
     @Test(expected = IllegalArgumentException.class)
     public void testNewWithNullIndexPagePath() {
         new IndexPageServlet(null);
