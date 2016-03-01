@@ -7,9 +7,10 @@ package com.palantir.dropwizard.index;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
-import io.dropwizard.Bundle;
+import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.util.Set;
@@ -17,35 +18,44 @@ import java.util.Set;
 /**
  * Applies {@link IndexPageServlet} to the application.
  */
-public final class IndexPageBundle implements Bundle {
+public final class IndexPageBundle implements ConfiguredBundle<IndexPageConfigurable> {
 
     public static final String INDEX_PAGE_NAME = "index.html";
 
-    private final ImmutableSet<String> mappings;
-    private final String indexPagePath;
+    private static final Set<String> DEFAULT_MAPPING = ImmutableSet.of("/");
+    private static final String DEFAULT_PATH = "./service/web/index.html";
 
+    private final String indexPagePath;
+    private final ImmutableSet<String> mappings;
+
+    /**
+     * Creates a new {@link IndexPageBundle} which serves up the index page from the file system using
+     * {@code ./service/web/index.html} as the default file path.
+     *
+     * @param mappings      the mappings for the {@link IndexPageServlet} which serves up the index page
+     */
     public IndexPageBundle(Set<String> mappings) {
-        this(INDEX_PAGE_NAME, mappings);
+        this(DEFAULT_PATH, mappings);
     }
 
+    /**
+     * Creates a new {@link IndexPageBundle} which serves up the index page from the file system specified by the
+     * {@code indexPagePath}.
+     *
+     * @param indexPagePath the path of the index page
+     * @param mappings      the mappings for the {@link IndexPageServlet} which serves up the index page
+     */
     public IndexPageBundle(String indexPagePath, Set<String> mappings) {
         checkArgument(!Strings.isNullOrEmpty(indexPagePath));
         checkNotNull(mappings);
 
-        this.mappings = ImmutableSet.<String>builder().add("/").addAll(mappings).build();
-        this.indexPagePath = trimSlash(indexPagePath);
+        this.indexPagePath = indexPagePath;
+        this.mappings = ImmutableSet.<String>builder().addAll(DEFAULT_MAPPING).addAll(mappings).build();
     }
 
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
         // intentionally left blank
-    }
-
-    @Override
-    public void run(Environment environment) {
-        checkNotNull(environment);
-
-        addIndexPageServlet(environment, indexPagePath, mappings);
     }
 
     private static void addIndexPageServlet(Environment environment, String indexPagePath, Set<String> mappings) {
@@ -54,11 +64,17 @@ public final class IndexPageBundle implements Bundle {
                 .addMapping(mappings.toArray(new String[mappings.size()]));
     }
 
-    private static String trimSlash(String input) {
-        if (input.startsWith("/")) {
-            return input.substring(1);
+    @Override
+    public void run(IndexPageConfigurable configuration, Environment environment) throws Exception {
+        checkNotNull(configuration);
+        checkNotNull(environment);
+
+        String overriddenPath = indexPagePath;
+        Optional<String> maybeConfiguration = configuration.getIndexPagePath();
+        if (maybeConfiguration.isPresent()) {
+            overriddenPath = maybeConfiguration.get();
         }
 
-        return input;
+        addIndexPageServlet(environment, overriddenPath, mappings);
     }
 }

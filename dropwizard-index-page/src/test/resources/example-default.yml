@@ -1,0 +1,7 @@
+server:
+  applicationContextPath: /example
+  rootPath: /api/*
+
+  applicationConnectors:
+    - type: http
+      port: 0

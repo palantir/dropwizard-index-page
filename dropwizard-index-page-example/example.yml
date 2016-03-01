@@ -1,6 +1,8 @@
 # ====================
 # Index Page Bundle
 # ====================
+indexPagePath: ../dropwizard-index-page-example/service/web/index.html
+
 server:
   applicationConnectors:
     - type: http

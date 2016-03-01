@@ -17,12 +17,12 @@ plugins {
 apply plugin: 'com.palantir.baseline-config'
 apply plugin: 'com.palantir.baseline-idea'
 
-repositories {
-    jcenter()
-}
-
 allprojects {
     group 'com.palantir.dropwizard.index-page'
+    repositories {
+        jcenter()
+    }
+
     version gitVersion()
 }
 
@@ -32,10 +32,6 @@ subprojects {
     apply plugin: 'com.palantir.baseline-eclipse'
     apply plugin: 'com.palantir.baseline-findbugs'
     apply plugin: 'com.palantir.baseline-idea'
-
-    repositories {
-        jcenter()
-    }
 
     sourceCompatibility = 1.7
 }

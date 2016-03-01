@@ -1,0 +1,9 @@
+indexPagePath: src/test/resources/service/web/index.html
+
+server:
+  applicationContextPath: /example
+  rootPath: /api/*
+
+  applicationConnectors:
+    - type: http
+      port: 0

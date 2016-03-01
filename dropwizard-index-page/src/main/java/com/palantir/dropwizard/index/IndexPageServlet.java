@@ -32,6 +32,7 @@ public final class IndexPageServlet extends DefaultServlet {
 
     private static final long serialVersionUID = 1L;
     private static final String BASE_URL = "baseUrl";
+    private static final String CACHE_CONTROL = "no-cache, no-store, max-age=0, must-revalidate";
 
     @SuppressFBWarnings("SE_BAD_FIELD")
     private final DefaultMustacheFactory factory;
@@ -48,14 +49,14 @@ public final class IndexPageServlet extends DefaultServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        response.setHeader(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, max-age=0, must-revalidate");
+        response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL);
 
         Map<String, String> context = ImmutableMap.of(BASE_URL, request.getContextPath() + "/");
         BufferedReader reader;
         try {
             reader = Files.newReader(indexPage, Charsets.UTF_8);
         } catch (FileNotFoundException e) {
-            response.sendError(HttpStatus.NOT_FOUND_404);
+            response.sendError(HttpStatus.NOT_FOUND_404, "Index page file not found.");
             return;
         }
 

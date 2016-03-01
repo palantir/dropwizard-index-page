@@ -18,7 +18,9 @@ Usage
   ```
   <base href="{{baseUrl}}">
   ```
-2. Add the bundle to your application:
+2. Ensure your application configuration implements `IndexPageConfigurable`
+
+3. Add the bundle to your application:
 
   ```java
   public class ExampleApplication extends Application<ExampleConfiguration> {
@@ -27,20 +29,6 @@ Usage
       public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
           // the default index page path is "index.html"
           bootstrap.addBundle(new IndexPageBundle(ImmutableSet.of("/views/*"));
-      }
-  }
-  ```
-
-Advanced
---------
-You can also specify the index page path when you add the bundle to your application:
-
-  ```java
-  public class ExampleApplication extends Application<ExampleConfiguration> {
-
-      @Override
-      public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
-          bootstrap.addBundle(new IndexPageBundle("/assets/index.html", ImmutableSet.of("/views/*"));
       }
   }
   ```
