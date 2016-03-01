@@ -13,5 +13,6 @@ dependencies {
 }
 
 jacocoCoverage {
-    fileThreshold 0.0, "IndexPageBundle.java"
+    // Enforce minimum code coverage of 70% for every Java file.
+    fileThreshold 0.7
 }
