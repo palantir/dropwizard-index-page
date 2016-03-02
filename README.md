@@ -27,7 +27,7 @@ Usage
 
       @Override
       public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
-          // the default index page path is "index.html"
+          // the default index page path is "./service/web/index.html"
           bootstrap.addBundle(new IndexPageBundle(ImmutableSet.of("/views/*"));
       }
   }
