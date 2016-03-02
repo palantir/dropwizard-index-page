@@ -13,6 +13,5 @@ dependencies {
 }
 
 jacocoCoverage {
-    // Enforce minimum code coverage of 70% for every Java file.
     fileThreshold 0.7
 }

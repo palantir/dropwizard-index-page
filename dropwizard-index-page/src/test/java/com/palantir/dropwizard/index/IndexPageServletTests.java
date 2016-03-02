@@ -27,7 +27,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  * Test for {@link IndexPageServlet}.
  */
@@ -67,7 +66,8 @@ public final class IndexPageServletTests {
     @Test
     @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     public void testDoGetUsingPath() throws IOException, ServletException {
-        String indexPagePath = IndexPageServletTests.class.getClassLoader().getResource("index.html").getPath();
+        String indexPagePath =
+                IndexPageServletTests.class.getClassLoader().getResource("service/web/index.html").getPath();
         IndexPageServlet servlet = new IndexPageServlet(indexPagePath);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(outputStream);
