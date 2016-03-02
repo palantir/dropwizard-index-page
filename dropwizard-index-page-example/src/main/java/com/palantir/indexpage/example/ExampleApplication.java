@@ -2,15 +2,15 @@
  * Copyright 2016 Palantir Technologies, Inc. All rights reserved.
  */
 
-package com.palantir.dropwizard.index.example;
+package com.palantir.indexpage.example;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
-import com.palantir.dropwizard.index.IndexPageBundle;
-import com.palantir.dropwizard.index.IndexPageConfigurable;
-import com.palantir.dropwizard.index.example.ExampleApplication.ExampleConfig;
+import com.palantir.indexpage.IndexPageBundle;
+import com.palantir.indexpage.IndexPageConfigurable;
+import com.palantir.indexpage.example.ExampleApplication.ExampleConfig;
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
 import io.dropwizard.assets.AssetsBundle;

@@ -18,7 +18,7 @@ apply plugin: 'com.palantir.baseline-config'
 apply plugin: 'com.palantir.baseline-idea'
 
 allprojects {
-    group 'com.palantir.dropwizard.index-page'
+    group 'com.palantir.indexpage'
     repositories {
         jcenter()
     }

@@ -2,14 +2,14 @@
  * Copyright 2016 Palantir Technologies, Inc. All rights reserved.
  */
 
-package com.palantir.dropwizard.index;
+package com.palantir.indexpage;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableSet;
-import com.palantir.dropwizard.index.IndexPageBundleTests.BundleConfiguredPath;
-import com.palantir.dropwizard.index.IndexPageBundleTests.BundleDefaultPath;
+import com.palantir.indexpage.IndexPageBundleTests.BundleConfiguredPath;
+import com.palantir.indexpage.IndexPageBundleTests.BundleDefaultPath;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.junit.DropwizardAppRule;
 import javax.ws.rs.client.Client;
