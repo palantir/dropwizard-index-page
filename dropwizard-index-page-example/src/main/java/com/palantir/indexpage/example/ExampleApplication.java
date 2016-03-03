@@ -13,12 +13,11 @@ import com.palantir.indexpage.IndexPageConfigurable;
 import com.palantir.indexpage.example.ExampleApplication.ExampleConfig;
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
-import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 /**
- * Example application that consumes {@link AssetsBundle} and {@link IndexPageBundle}.
+ * Example application that consumes {@link IndexPageBundle}.
  */
 public final class ExampleApplication extends Application<ExampleConfig> {
 

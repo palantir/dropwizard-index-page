@@ -3,11 +3,10 @@ apply plugin: "application"
 dependencies {
     compile project(":dropwizard-index-page")
 
-    compile "io.dropwizard:dropwizard-assets:$dropwizardVersion"
     compile "io.dropwizard:dropwizard-core:$dropwizardVersion"
 }
 
-mainClassName = "com.palantir.dropwizard.index.example.ExampleApplication"
+mainClassName = "com.palantir.indexpage.example.ExampleApplication"
 
 run {
     args "server", "example.yml"
