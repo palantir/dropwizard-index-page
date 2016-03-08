@@ -13,6 +13,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.common.net.HttpHeaders;
+import com.google.common.net.MediaType;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.servlet.DefaultServlet;
+
 /**
  * Used to serve to the index page and set disable cache headers in the HTTP response.
  */
@@ -50,6 +52,7 @@ public final class IndexPageServlet extends DefaultServlet {
             throws ServletException, IOException {
 
         response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL);
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.HTML_UTF_8.toString());
 
         Map<String, String> context = ImmutableMap.of(BASE_URL, request.getContextPath() + "/");
         BufferedReader reader;
