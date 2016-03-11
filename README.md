@@ -15,25 +15,63 @@ A bundle that serves the *index* page for a single page application. It covers t
 
 Usage
 -----
-1. Ensure the base tag in your index page is set:
-  ```
-  <base href="{{baseUrl}}">
-  ```
-2. Ensure your application configuration implements `IndexPageConfigurable`
+1. Add the ``com.palantir.indexpage:dropwizard-index-page:<VERSION>`` dependency to your project's build.gradle file.
+    The most recent version number can be found by looking at the [Releases Page](https://github.com/palantir/dropwizard-index-page/releases).
+    The dependencies section should look something like this:
+    
+    ```
+    dependencies {
+        // ... unrelated dependencies omitted ...
+        compile "com.palantir.indexpage:dropwizard-index-page:<VERSION>"
+    }
+    ```
+2. Ensure the base tag in your ``index.html`` page is set:
 
-3. Add the bundle to your application:
+    ```
+    <base href="{{baseUrl}}">
+    ```
+3. Have your configuration implement `IndexPageConfigurable`:
 
-  ```java
-  public class ExampleApplication extends Application<ExampleConfiguration> {
+    ```
+    public final class ExampleApplicationConfiguration extends Configuration implements IndexPageConfigurable {
 
-      @Override
-      public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
-          // the default index page path is "./service/web/index.html"
-          bootstrap.addBundle(new IndexPageBundle(ImmutableSet.of("/views/*"));
-      }
-  }
-  ```
+        private final Optional<String> indexPagePath;
 
+        @JsonCreator
+        ExampleConfig(@JsonProperty("indexPagePath") Optional<String> indexPagePath) {
+            this.indexPagePath = indexPagePath;
+        }
+
+        @Override
+        public Optional<String> getIndexPagePath() {
+            return this.indexPagePath;
+        }
+    }
+    ```
+
+4. Add the bundle to your application:
+
+    ```
+    public class ExampleApplication extends Application<ExampleConfiguration> {
+
+        @Override
+        public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
+            // the default index page path is "./service/web/index.html" and you override it during the bundle creation
+            // or in your application configuration
+            bootstrap.addBundle(new IndexPageBundle(ImmutableSet.of("/views/*"));`
+        }
+    }
+    ```
+
+Setting up the project with an IDE
+----------------------------------
+with Eclipse, import the project and run:
+
+        ./gradlew eclipse
+
+with IntelliJ, import the project and run:
+
+        ./gradlew idea
 
 Contributing
 ------------
