@@ -31,15 +31,15 @@ public final class TestApp extends Application<TestConfiguration> {
 
     public static final class TestConfiguration extends Configuration implements IndexPageConfigurable {
 
-        private final Optional<String> indexPagePath;
+        private final String indexPagePath;
 
         @JsonCreator
         public TestConfiguration(@JsonProperty("indexPagePath") Optional<String> indexPagePath) {
-            this.indexPagePath = indexPagePath;
+            this.indexPagePath = indexPagePath.or("./service/web/index.html");
         }
 
         @Override
-        public Optional<String> getIndexPagePath() {
+        public String getIndexPagePath() {
             return this.indexPagePath;
         }
     }

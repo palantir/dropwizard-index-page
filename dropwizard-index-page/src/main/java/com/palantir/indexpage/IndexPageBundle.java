@@ -7,7 +7,6 @@ package com.palantir.indexpage;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import io.dropwizard.ConfiguredBundle;
@@ -70,9 +69,9 @@ public final class IndexPageBundle implements ConfiguredBundle<IndexPageConfigur
         checkNotNull(environment);
 
         String overriddenPath = indexPagePath;
-        Optional<String> maybeConfiguration = configuration.getIndexPagePath();
-        if (maybeConfiguration.isPresent()) {
-            overriddenPath = maybeConfiguration.get();
+        String maybeIndexPagePath = configuration.getIndexPagePath();
+        if (!Strings.isNullOrEmpty(maybeIndexPagePath)) {
+            overriddenPath = maybeIndexPagePath;
         }
 
         addIndexPageServlet(environment, overriddenPath, mappings);

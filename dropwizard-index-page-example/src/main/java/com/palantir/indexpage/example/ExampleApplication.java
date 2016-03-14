@@ -37,15 +37,15 @@ public final class ExampleApplication extends Application<ExampleConfig> {
 
     static class ExampleConfig extends Configuration implements IndexPageConfigurable {
 
-        private final Optional<String> indexPagePath;
+        private final String indexPagePath;
 
         @JsonCreator
         ExampleConfig(@JsonProperty("indexPagePath") Optional<String> indexPagePath) {
-            this.indexPagePath = indexPagePath;
+            this.indexPagePath = indexPagePath.or("./service/web/index.html");
         }
 
         @Override
-        public Optional<String> getIndexPagePath() {
+        public String getIndexPagePath() {
             return this.indexPagePath;
         }
     }

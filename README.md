@@ -35,15 +35,16 @@ Usage
     ```
     public final class ExampleApplicationConfiguration extends Configuration implements IndexPageConfigurable {
 
-        private final Optional<String> indexPagePath;
+        private final String indexPagePath;
 
         @JsonCreator
         ExampleConfig(@JsonProperty("indexPagePath") Optional<String> indexPagePath) {
-            this.indexPagePath = indexPagePath;
+            // use this.indexPagePath = indexPagePath.orNull() if you want to use the default path
+            this.indexPagePath = indexPagePath.or("./service/web/index.html");
         }
 
         @Override
-        public Optional<String> getIndexPagePath() {
+        public String getIndexPagePath() {
             return this.indexPagePath;
         }
     }
