@@ -73,6 +73,24 @@ public final class IndexPageBundleTests {
                     .get();
             assertEquals(HttpStatus.OK_200, response.getStatus());
         }
+
+        @Test
+        public void testGetIndexPageWithHome() {
+            Client client = ClientBuilder.newClient();
+            Response response = client.target(String.format("http://localhost:%d/example/home", rule.getLocalPort()))
+                    .request()
+                    .get();
+            assertEquals(HttpStatus.OK_200, response.getStatus());
+        }
+
+        @Test
+        public void testGetIndexPageWithWrongPath() {
+            Client client = ClientBuilder.newClient();
+            Response response = client.target(String.format("http://localhost:%d/example/wrongpath", rule.getLocalPort()))
+                    .request()
+                    .get();
+            assertEquals(HttpStatus.NOT_FOUND_404, response.getStatus());
+        }
     }
 
     public static final class BundleDefaultPath {
