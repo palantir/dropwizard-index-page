@@ -22,27 +22,30 @@ public final class IndexPageBundle implements ConfiguredBundle<IndexPageConfigur
     public static final String INDEX_PAGE_NAME = "index.html";
 
     private static final Set<String> DEFAULT_MAPPING = ImmutableSet.of("");
-    private static final String DEFAULT_PATH = "./service/web/index.html";
+    private static final String DEFAULT_PATH = "service/web/index.html";
 
     private final String indexPagePath;
     private final ImmutableSet<String> mappings;
 
     /**
-     * Creates a new {@link IndexPageBundle} which serves up the index page from the file system using
-     * {@code ./service/web/index.html} as the default file path.
+     * Creates a new {@link IndexPageBundle} which serves up the index page from either the file system or the class
+     * path using {@code ./service/web/index.html} as the default path.
      *
-     * @param mappings      the mappings for the {@link IndexPageServlet} which serves up the index page
+     * @param mappings
+     *        the mappings for the {@link IndexPageServlet} which serves up the index page
      */
     public IndexPageBundle(Set<String> mappings) {
         this(DEFAULT_PATH, mappings);
     }
 
     /**
-     * Creates a new {@link IndexPageBundle} which serves up the index page from the file system specified by the
-     * {@code indexPagePath}.
+     * Creates a new {@link IndexPageBundle} which serves up the index page from either the file system or the class
+     * path specified by the {@code indexPagePath}.
      *
-     * @param indexPagePath the path of the index page
-     * @param mappings      the mappings for the {@link IndexPageServlet} which serves up the index page
+     * @param indexPagePath
+     *        the path of the index page
+     * @param mappings
+     *        the mappings for the {@link IndexPageServlet} which serves up the index page
      */
     public IndexPageBundle(String indexPagePath, Set<String> mappings) {
         checkArgument(!Strings.isNullOrEmpty(indexPagePath));
@@ -58,8 +61,9 @@ public final class IndexPageBundle implements ConfiguredBundle<IndexPageConfigur
     }
 
     private static void addIndexPageServlet(Environment environment, String indexPagePath, Set<String> mappings) {
+        String contextPath = environment.getApplicationContext().getContextPath();
         environment.servlets()
-                .addServlet(INDEX_PAGE_NAME, new IndexPageServlet(indexPagePath))
+                .addServlet(INDEX_PAGE_NAME, new IndexPageServlet(contextPath, indexPagePath))
                 .addMapping(mappings.toArray(new String[mappings.size()]));
     }
 

@@ -13,5 +13,5 @@ dependencies {
 }
 
 jacocoCoverage {
-    fileThreshold 0.7
+    reportThreshold 0.7
 }

@@ -6,21 +6,16 @@ package com.palantir.indexpage;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.github.mustachejava.DefaultMustacheFactory;
-import com.github.mustachejava.Mustache;
-import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,44 +23,59 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.servlet.DefaultServlet;
 
 /**
- * Used to serve to the index page and set disable cache headers in the HTTP response.
+ * Used to serve the index page and set disable cache headers in the HTTP response.
  */
 public final class IndexPageServlet extends DefaultServlet {
 
+    public static final String BASE_URL = "baseUrl";
+
     private static final long serialVersionUID = 1L;
-    private static final String BASE_URL = "baseUrl";
     private static final String CACHE_CONTROL = "no-cache, no-store, max-age=0, must-revalidate";
 
     @SuppressFBWarnings("SE_BAD_FIELD")
-    private final DefaultMustacheFactory factory;
-    private final File indexPage;
+    private final IndexPage indexPage;
 
-    public IndexPageServlet(String indexPagePath) {
+    /**
+     * Creates a new servlet that will try to serve the index page from the local file path. If the page doesn't exist
+     * on the disk, the servlet will try to load it from the classpath.
+     *
+     * @param contextPath the context path used as the base url for the index page
+     * @param indexPagePath
+     *        the path to the index path and it can either be the classpath or the local file path
+     * @throws IllegalArgumentException if the index page is not found
+     */
+    public IndexPageServlet(String contextPath, String indexPagePath) {
+        checkArgument(contextPath != null);
         checkArgument(!Strings.isNullOrEmpty(indexPagePath));
 
-        this.factory = new DefaultMustacheFactory();
-        this.indexPage = new File(indexPagePath);
+        String slashedContextPath = contextPath;
+        if (!contextPath.endsWith("/")) {
+            slashedContextPath += "/";
+        }
+
+        ImmutableMap<String, String> templateContext = ImmutableMap.of(BASE_URL, slashedContextPath);
+        File file = new File(indexPagePath);
+        if (file.exists()) {
+            indexPage = new FileSystemIndexPage(templateContext, file);
+        } else {
+            indexPage = new ClasspathIndexPage(templateContext, Resources.getResource(indexPagePath));
+        }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL);
-        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.HTML_UTF_8.toString());
-
-        Map<String, String> context = ImmutableMap.of(BASE_URL, request.getContextPath() + "/");
-        BufferedReader reader;
-        try {
-            reader = Files.newReader(indexPage, Charsets.UTF_8);
-        } catch (FileNotFoundException e) {
+        Optional<String> maybeContent = indexPage.getContent();
+        if (!maybeContent.isPresent()) {
             response.sendError(HttpStatus.NOT_FOUND_404, "Index page file not found.");
             return;
         }
 
-        Mustache mustache = factory.compile(reader, IndexPageBundle.INDEX_PAGE_NAME);
-        PrintWriter writer = response.getWriter();
-        mustache.execute(writer, context);
-        writer.close();
+        response.setHeader(HttpHeaders.CACHE_CONTROL, CACHE_CONTROL);
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.HTML_UTF_8.toString());
+        try (PrintWriter writer = response.getWriter()) {
+            writer.write(maybeContent.get());
+        }
     }
 }
