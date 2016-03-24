@@ -12,9 +12,9 @@
             <nav class="navbar navbar-default">
                 <div class="container">
                     <ul class="nav navbar-nav navbar-center">
-                        <li><a href="#hello"><i class="fa fa-lightbulb-o"></i>Hello</a></li>
-                        <li><a href="#goodbye"><i class="fa fa-power-off"></i>Goodbye</a></li>
-                        <li><a href="#surprise"><i class="fa fa-gift"></i>Surpise!</a></li>
+                        <li><a href="/hello"><i class="fa fa-lightbulb-o"></i>Hello</a></li>
+                        <li><a href="/goodbye"><i class="fa fa-power-off"></i>Goodbye</a></li>
+                        <li><a href="/surprise"><i class="fa fa-gift"></i>Surpise!</a></li>
                     </ul>
                 </div>
             </nav>
@@ -26,24 +26,25 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-route.min.js"></script>
         <script>
               var demoApp = angular.module("demo", ['ngRoute']);
-              demoApp.config(['$routeProvider',
-                  function($routeProvider) {
-                  $routeProvider.
-                  when('/hello', {
-                        template: '<div class=\"jumbotron text-center\"><h1>Hello World!</h1><br><p>\{\{ message \}\}</p></div>',
-                        controller: 'helloController'
-                      }).
-                      when('/goodbye', {
-                        template: '<div class=\"jumbotron text-center\"><h1>Goodbye World!</h1><br><p>\{\{ message \}\}</p></div>',
-                        controller: 'goodbyeController'
-                      }).
-                      when('/surprise', {
-                        template: '<div class=\"jumbotron text-center\"><h1>Surpise!</h1><br><p>\{\{ message \}\}</p></div>',
-                        controller: 'surpriseController'
-                      }).
-                      otherwise({
-                        redirectTo: '/hello'
-                      });
+              demoApp.config(['$routeProvider', '$locationProvider',
+                  function($routeProvider, $locationProvider) {
+                      $routeProvider.
+                          when('/', {
+                            template: '<div class=\"jumbotron text-center\"><h1>Hello World!</h1><br><p>\{\{ message \}\}</p></div>',
+                            controller: 'helloController'
+                          }).
+                          when('/goodbye', {
+                            template: '<div class=\"jumbotron text-center\"><h1>Goodbye World!</h1><br><p>\{\{ message \}\}</p></div>',
+                            controller: 'goodbyeController'
+                          }).
+                          when('/surprise', {
+                            template: '<div class=\"jumbotron text-center\"><h1>Surpise!</h1><br><p>\{\{ message \}\}</p></div>',
+                            controller: 'surpriseController'
+                          }).
+                          otherwise({
+                            redirectTo: '/'
+                          });
+                      $locationProvider.html5Mode(true);
                   }
               ]);
               demoApp.controller('helloController', function($scope) {
