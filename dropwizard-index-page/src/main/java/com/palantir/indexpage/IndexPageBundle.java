@@ -21,7 +21,7 @@ public final class IndexPageBundle implements ConfiguredBundle<IndexPageConfigur
 
     public static final String INDEX_PAGE_NAME = "index.html";
 
-    private static final Set<String> DEFAULT_MAPPING = ImmutableSet.of("", "/");
+    private static final Set<String> DEFAULT_MAPPING = ImmutableSet.of("");
     private static final String DEFAULT_PATH = "./service/web/index.html";
 
     private final String indexPagePath;

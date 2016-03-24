@@ -21,7 +21,7 @@ public final class TestApp extends Application<TestConfiguration> {
 
     @Override
     public void initialize(Bootstrap<TestConfiguration> bootstrap) {
-        bootstrap.addBundle(new IndexPageBundle(ImmutableSet.of("")));
+        bootstrap.addBundle(new IndexPageBundle(ImmutableSet.of("/home")));
     }
 
     @Override
