@@ -4,6 +4,7 @@
 indexPagePath: service/web/index.html
 
 server:
+  applicationContextPath: /example
   applicationConnectors:
     - type: http
       port: 8000

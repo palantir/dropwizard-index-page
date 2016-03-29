@@ -1,9 +1,10 @@
 indexPagePath: src/test/resources/service/web/reloadIndex.html
 
 server:
+  type: simple
   applicationContextPath: /example
   rootPath: /api/*
 
-  applicationConnectors:
-    - type: http
-      port: 0
+  connector:
+    type: http
+    port: 0
