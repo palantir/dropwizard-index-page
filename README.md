@@ -25,7 +25,7 @@ Usage
         compile "com.palantir.indexpage:dropwizard-index-page:<VERSION>"
     }
     ```
-2. Ensure the base tag in your ``index.html`` page is set:
+2. Ensure the base tag in your ``index.html`` page is set using [mustache](https://mustache.github.io/):
 
     ```
     <base href="{{baseUrl}}">
@@ -39,8 +39,7 @@ Usage
 
         @JsonCreator
         ExampleConfig(@JsonProperty("indexPagePath") Optional<String> indexPagePath) {
-            // use this.indexPagePath = indexPagePath.orNull() if you want to use the default path
-            this.indexPagePath = indexPagePath.or("./service/web/index.html");
+            this.indexPagePath = indexPagePath.or("service/web/index.html");
         }
 
         @Override
@@ -53,16 +52,20 @@ Usage
 4. Add the bundle to your application:
 
     ```
-    public class ExampleApplication extends Application<ExampleConfiguration> {
+    public final class ExampleApplication extends Application<ExampleConfiguration> {
 
         @Override
         public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
-            // the default index page path is "./service/web/index.html" and you override it during the bundle creation
-            // or in your application configuration
             bootstrap.addBundle(new IndexPageBundle(ImmutableSet.of("/views/*"));`
         }
     }
     ```
+
+Configuration
+-------------
+The default index page path is `service/web/index.html` and you can override the path via the `IndexPageConfigurable` interface.
+
+**NOTE**: The path for the index page can be either the file sytem path or the classpath and the file system path takes precedence over the classpath if the file exists in both paths.
 
 Setting up the project with an IDE
 ----------------------------------

@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test for {@link IndexPageServlet}.
+ * Tests for {@link IndexPageServlet}.
  */
 public final class IndexPageServletTests {
 
@@ -53,14 +53,19 @@ public final class IndexPageServletTests {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void testNewWithEmptyContextPath() {
+        new IndexPageServlet(null, "");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void testNewWithEmptyIndexPagePath() {
-        new IndexPageServlet("");
+        new IndexPageServlet("", "");
     }
 
     @SuppressFBWarnings("NP_NULL_PARAM_DEREF_NONVIRTUAL")
     @Test(expected = IllegalArgumentException.class)
     public void testNewWithNullIndexPagePath() {
-        new IndexPageServlet(null);
+        new IndexPageServlet("", null);
     }
 
     @Test
@@ -68,11 +73,10 @@ public final class IndexPageServletTests {
     public void testDoGetUsingPath() throws IOException, ServletException {
         String indexPagePath =
                 IndexPageServletTests.class.getClassLoader().getResource("service/web/index.html").getPath();
-        IndexPageServlet servlet = new IndexPageServlet(indexPagePath);
+        IndexPageServlet servlet = new IndexPageServlet("/testBaseUrl", indexPagePath);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(outputStream);
 
-        when(mockRequest.getContextPath()).thenReturn("/testBaseUrl");
         when(mockResponse.getWriter()).thenReturn(writer);
         servlet.init(mockConfig);
         servlet.doGet(mockRequest, mockResponse);
