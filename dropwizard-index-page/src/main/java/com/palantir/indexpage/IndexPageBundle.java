@@ -9,7 +9,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
+import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
+import io.dropwizard.server.DefaultServerFactory;
+import io.dropwizard.server.ServerFactory;
+import io.dropwizard.server.SimpleServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.util.Set;
@@ -60,13 +64,6 @@ public final class IndexPageBundle implements ConfiguredBundle<IndexPageConfigur
         // intentionally left blank
     }
 
-    private static void addIndexPageServlet(Environment environment, String indexPagePath, Set<String> mappings) {
-        String contextPath = environment.getApplicationContext().getContextPath();
-        environment.servlets()
-                .addServlet(INDEX_PAGE_NAME, new IndexPageServlet(contextPath, indexPagePath))
-                .addMapping(mappings.toArray(new String[mappings.size()]));
-    }
-
     @Override
     public void run(IndexPageConfigurable configuration, Environment environment) throws Exception {
         checkNotNull(configuration);
@@ -78,6 +75,32 @@ public final class IndexPageBundle implements ConfiguredBundle<IndexPageConfigur
             overriddenPath = maybeIndexPagePath;
         }
 
-        addIndexPageServlet(environment, overriddenPath, mappings);
+        addIndexPageServlet(configuration, environment, overriddenPath, mappings);
+    }
+
+    private static void addIndexPageServlet(
+            IndexPageConfigurable configuration, Environment environment, String indexPagePath, Set<String> mappings) {
+        String contextPath = getContextPath(configuration);
+        environment.servlets()
+                .addServlet(INDEX_PAGE_NAME, new IndexPageServlet(contextPath, indexPagePath))
+                .addMapping(mappings.toArray(new String[mappings.size()]));
+    }
+
+    private static String getContextPath(IndexPageConfigurable configuration) {
+        String contextPath = "/";
+
+        if (configuration instanceof Configuration) {
+            Configuration dwConfig = (Configuration) configuration;
+            ServerFactory serverFactory = dwConfig.getServerFactory();
+            if (serverFactory instanceof DefaultServerFactory) {
+                DefaultServerFactory defaultServerFactory = (DefaultServerFactory) serverFactory;
+                contextPath = defaultServerFactory.getApplicationContextPath();
+            } else if (serverFactory instanceof SimpleServerFactory) {
+                SimpleServerFactory simpleServerFactory = (SimpleServerFactory) serverFactory;
+                contextPath = simpleServerFactory.getApplicationContextPath();
+            }
+        }
+
+        return contextPath;
     }
 }

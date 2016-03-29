@@ -48,7 +48,9 @@ public final class IndexPageBundleServingFromFileSystemTest {
                 .request()
                 .get();
         assertEquals(HttpStatus.OK_200, response.getStatus());
-        assertTrue(response.readEntity(String.class).contains("Hello World!"));
+        String responseContent = response.readEntity(String.class);
+        assertTrue(responseContent.contains("Hello World!"));
+        assertTrue(responseContent.contains("<base href=\"/example/\">"));
 
         String tempContent = originalContent.replace("Hello", "Cruel");
 

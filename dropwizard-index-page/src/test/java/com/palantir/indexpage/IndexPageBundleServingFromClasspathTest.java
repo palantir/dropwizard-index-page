@@ -5,6 +5,7 @@
 package com.palantir.indexpage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import io.dropwizard.testing.junit.DropwizardAppRule;
 import javax.ws.rs.client.Client;
@@ -31,5 +32,6 @@ public final class IndexPageBundleServingFromClasspathTest {
                 .request()
                 .get();
         assertEquals(HttpStatus.OK_200, response.getStatus());
+        assertTrue(response.readEntity(String.class).contains("<base href=\"/example/\">"));
     }
 }

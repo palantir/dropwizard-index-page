@@ -5,6 +5,7 @@
 package com.palantir.indexpage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.ImmutableSet;
@@ -57,16 +58,17 @@ public final class IndexPageBundleTests {
     @Test
     public void testGetIndexPage() {
         Client client = ClientBuilder.newClient();
-        Response response = client.target(String.format("http://localhost:%d/example/", rule.getLocalPort()))
+        Response response = client.target(String.format("http://localhost:%d/", rule.getLocalPort()))
                 .request()
                 .get();
         assertEquals(HttpStatus.OK_200, response.getStatus());
+        assertTrue(response.readEntity(String.class).contains("<base href=\"/\">"));
     }
 
     @Test
     public void testGetIndexPageWithHome() {
         Client client = ClientBuilder.newClient();
-        Response response = client.target(String.format("http://localhost:%d/example/home", rule.getLocalPort()))
+        Response response = client.target(String.format("http://localhost:%d/home", rule.getLocalPort()))
                 .request()
                 .get();
         assertEquals(HttpStatus.OK_200, response.getStatus());
@@ -75,7 +77,7 @@ public final class IndexPageBundleTests {
     @Test
     public void testGetIndexPageWithWrongPath() {
         Client client = ClientBuilder.newClient();
-        Response response = client.target(String.format("http://localhost:%d/example/wrongpath", rule.getLocalPort()))
+        Response response = client.target(String.format("http://localhost:%d/wrongpath", rule.getLocalPort()))
                 .request()
                 .get();
         assertEquals(HttpStatus.NOT_FOUND_404, response.getStatus());
