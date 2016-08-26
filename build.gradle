@@ -32,7 +32,5 @@ subprojects {
     apply plugin: 'com.palantir.baseline-eclipse'
     apply plugin: 'com.palantir.baseline-findbugs'
     apply plugin: 'com.palantir.baseline-idea'
-
-    sourceCompatibility = 1.7
 }
 
