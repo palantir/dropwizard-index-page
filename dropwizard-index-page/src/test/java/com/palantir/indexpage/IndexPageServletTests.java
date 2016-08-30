@@ -30,6 +30,7 @@ import org.junit.Test;
 /**
  * Tests for {@link IndexPageServlet}.
  */
+@SuppressWarnings("unchecked")
 public final class IndexPageServletTests {
 
     private final ServletConfig mockConfig = mock(ServletConfig.class);
@@ -38,7 +39,7 @@ public final class IndexPageServletTests {
     private final RequestDispatcher mockRequestDispatcher = mock(RequestDispatcher.class);
 
     @Before
-    @SuppressWarnings("unchecked")
+
     public void setUp() throws ServletException {
         ContextHandler.Context mockContext = mock(ContextHandler.Context.class);
         ContextHandler mockContextHandler = mock(ContextHandler.class);
