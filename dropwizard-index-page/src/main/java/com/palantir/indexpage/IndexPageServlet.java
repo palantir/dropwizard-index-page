@@ -9,13 +9,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,11 +54,11 @@ public final class IndexPageServlet extends DefaultServlet {
         }
 
         ImmutableMap<String, String> templateContext = ImmutableMap.of(BASE_URL, slashedContextPath);
-        File file = new File(indexPagePath);
-        if (file.exists()) {
-            indexPage = new FileSystemIndexPage(templateContext, file);
+        Optional<URL> indexPageResource = tryGetResource(indexPagePath);
+        if (indexPageResource.isPresent()) {
+            indexPage = new ClasspathIndexPage(templateContext, indexPageResource.get());
         } else {
-            indexPage = new ClasspathIndexPage(templateContext, Resources.getResource(indexPagePath));
+            indexPage = new FileSystemIndexPage(templateContext, new File(indexPagePath));
         }
     }
 
@@ -77,5 +77,13 @@ public final class IndexPageServlet extends DefaultServlet {
         try (PrintWriter writer = response.getWriter()) {
             writer.write(maybeContent.get());
         }
+    }
+
+    private static Optional<URL> tryGetResource(String resourcePath) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if (loader == null) {
+            loader = IndexPageServlet.class.getClassLoader();
+        }
+        return Optional.fromNullable(loader.getResource(resourcePath));
     }
 }

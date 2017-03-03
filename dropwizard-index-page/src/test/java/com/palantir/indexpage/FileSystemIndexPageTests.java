@@ -5,19 +5,17 @@
 package com.palantir.indexpage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
+import com.github.mustachejava.MustacheException;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link FileSystemIndexPage}.
@@ -26,52 +24,58 @@ public final class FileSystemIndexPageTests {
 
     private static final Map<String, String> CONTEXT = ImmutableMap.of(IndexPageServlet.BASE_URL, "/example/");
 
-    private final File file = new File("./src/test/resources/service/web/reloadIndex.html");
+    @Rule
+    public final TemporaryFile indexFile = new TemporaryFile()
+            .suffix(".html")
+            .initialize(file -> IndexPageResources.update(file, IndexPageResources.INDEX_PAGE));
 
-    private String originalContent;
+    @Rule
+    public final ExpectedException thrown = ExpectedException.none();
 
-    @Before
-    public void init() throws IOException {
-        originalContent = Resources.toString(file.toURI().toURL(), Charsets.UTF_8);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateFileSystemAsset() {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("file");
         new FileSystemIndexPage(CONTEXT, null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateFileSystemWithInvalidFilePath() {
-        new FileSystemIndexPage(CONTEXT, new File("./src/test/resources/abc"));
+    @Test
+    public void testCreateFileSystemWithInvalidFile() throws IOException {
+        IndexPageResources.update(indexFile.get(), IndexPageResources.INDEX_PAGE_INVALID);
+        FileSystemIndexPage page = new FileSystemIndexPage(CONTEXT, indexFile.get());
+        thrown.expect(MustacheException.class);
+        page.getContent();
     }
 
     @Test
-    public void testFileSystemAssetWithChange() throws IOException {
-        FileSystemIndexPage indexPage = new FileSystemIndexPage(CONTEXT, file);
-        Optional<String> content1 = indexPage.getContent();
-        Optional<String> content2 = indexPage.getContent();
-
-        // template should be the same if the file is not changed
-        assertEquals(content1.get(), content2.get());
-
-        String tempContent = originalContent.replace("Hello", "Cruel");
-
-        // modify the file and let FileSystemAsset reload the file
-        try (FileOutputStream out = new FileOutputStream(file.getPath())) {
-            out.write(tempContent.getBytes(Charsets.UTF_8));
-        }
-
-        Optional<String> content3 = indexPage.getContent();
-        assertNotEquals(content1.get(), content3.get());
+    public void testCreateFileSystemWithAbsentFile() throws IOException {
+        assertTrue(indexFile.get().delete());
+        FileSystemIndexPage page = new FileSystemIndexPage(CONTEXT, indexFile.get());
+        assertFalse(page.getContent().isPresent());
     }
 
-    @After
-    public void revertChanges() throws IOException {
-        FileOutputStream out = new FileOutputStream(file.getPath());
-        try {
-            out.write(originalContent.getBytes(Charsets.UTF_8));
-        } finally {
-            out.close();
-        }
+    @Test
+    public void testCreateFileSystemWithAbsentThenPresentFile() throws IOException {
+        assertTrue(indexFile.get().delete());
+        FileSystemIndexPage page = new FileSystemIndexPage(CONTEXT, indexFile.get());
+        assertFalse(page.getContent().isPresent());
+        IndexPageResources.update(indexFile.get(), IndexPageResources.INDEX_PAGE);
+        assertTrue(page.getContent().isPresent());
+    }
+
+    @Test
+    public void testFileSystemAssetWithChange() throws IOException, InterruptedException {
+        FileSystemIndexPage indexPage = new FileSystemIndexPage(CONTEXT, indexFile.get());
+        String content1 = indexPage.getContent().get();
+        String content2 = indexPage.getContent().get();
+
+        // template should be the same if the file is not changed
+        assertEquals(content1, content2);
+
+        // modify the file and let FileSystemAsset reload the file
+        IndexPageResources.update(indexFile.get(), IndexPageResources.INDEX_PAGE_2);
+
+        String content3 = indexPage.getContent().get();
+        assertNotEquals(content1, content3);
     }
 }
