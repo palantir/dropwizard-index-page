@@ -9,9 +9,14 @@ dependencies {
     testCompile "io.dropwizard:dropwizard-assets:$dropwizardVersion"
     testCompile "io.dropwizard:dropwizard-testing:$dropwizardVersion"
     testCompile "junit:junit:$junitVersion"
-    testCompile "org.mockito:mockito-all:$mockitoVersion"
+    testCompile "org.hamcrest:hamcrest-library:$hamcrestVersion"
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
 }
 
 jacocoCoverage {
     reportThreshold 0.7
+
+    // Jacoco sees extra branches when using try-with-resources
+    // See https://github.com/jacoco/jacoco/issues/82
+    reportThreshold 0.6, BRANCH
 }
