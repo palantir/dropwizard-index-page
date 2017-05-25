@@ -1,17 +1,17 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url  "http://palantir.bintray.com/releases" }
     }
 
     dependencies {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintrayVersion"
-        classpath "com.palantir:gradle-baseline-java:$baselineVersion"
-        classpath "com.palantir:jacoco-coverage:$jacocoCoverageVersion"
+        classpath "com.palantir.baseline:gradle-baseline-java:$baselineVersion"
     }
 }
 
 plugins {
-    id 'com.palantir.git-version' version '0.4.0'
+    id 'com.palantir.git-version' version '0.7.3'
 }
 
 apply plugin: 'com.palantir.baseline-config'
@@ -30,7 +30,6 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'com.palantir.baseline-checkstyle'
     apply plugin: 'com.palantir.baseline-eclipse'
-    apply plugin: 'com.palantir.baseline-findbugs'
     apply plugin: 'com.palantir.baseline-idea'
 }
 

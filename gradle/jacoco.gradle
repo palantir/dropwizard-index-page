@@ -1,0 +1,44 @@
+apply plugin: "jacoco"
+
+jacoco {
+  toolVersion = "0.7.6.201602180812"
+}
+
+jacocoTestReport {
+  dependsOn test
+  reports {
+    xml.enabled true
+    csv.enabled false
+    html.destination "${buildDir}/reports/jacoco/"
+  }
+}
+
+project.ext.whitelistedInstructionClasses = []
+project.ext.whitelistedBranchClasses = []
+
+afterEvaluate {
+  jacocoTestCoverageVerification {
+    violationRules {
+      rule {
+        element = 'CLASS'
+        excludes = project.whitelistedInstructionClasses
+        limit {
+          counter = 'INSTRUCTION'
+          minimum = 0.60
+        }
+      }
+
+      rule {
+        element = 'CLASS'
+        excludes = project.whitelistedBranchClasses
+        limit {
+          counter = 'BRANCH'
+          minimum = 0.60
+        }
+      }
+    }
+  }
+
+  jacocoTestCoverageVerification.dependsOn jacocoTestReport
+  check.dependsOn jacocoTestCoverageVerification
+}
