@@ -1,12 +1,12 @@
 buildscript {
     repositories {
-        jcenter()
         maven { url  "http://palantir.bintray.com/releases" }
     }
 
     dependencies {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintrayVersion"
         classpath "com.palantir.baseline:gradle-baseline-java:$baselineVersion"
+        classpath "gradle.plugin.org.inferred:gradle-processors:$processorVersion"
     }
 }
 
@@ -14,8 +14,18 @@ plugins {
     id 'com.palantir.git-version' version '0.7.3'
 }
 
+repositories {
+    maven { url  "http://palantir.bintray.com/releases" }
+}
+
 apply plugin: 'com.palantir.baseline-config'
 apply plugin: 'com.palantir.baseline-idea'
+
+dependencies {
+    // Adds a dependency on the Baseline configuration files. Typically use
+    // the same version as the plugin itself.
+    baseline "com.palantir.baseline:gradle-baseline-java-config:{$baselineVersion}@zip"
+}
 
 allprojects {
     group 'com.palantir.indexpage'
@@ -31,5 +41,13 @@ subprojects {
     apply plugin: 'com.palantir.baseline-checkstyle'
     apply plugin: 'com.palantir.baseline-eclipse'
     apply plugin: 'com.palantir.baseline-idea'
+    apply plugin: "org.inferred.processors" // installs the "processor" configuration needed for baseline-error-prone
+    apply plugin: 'com.palantir.baseline-error-prone'
+
+    configurations.errorprone {
+        resolutionStrategy {
+            force 'com.google.guava:guava:21.0'
+        }
+    }
 }
 
