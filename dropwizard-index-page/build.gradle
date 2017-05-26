@@ -1,4 +1,4 @@
-apply plugin: 'com.palantir.jacoco-coverage'
+apply from: "${rootDir}/gradle/jacoco.gradle"
 apply from: "${rootDir}/gradle/publish.gradle"
 
 dependencies {
@@ -13,10 +13,3 @@ dependencies {
     testCompile "org.mockito:mockito-core:$mockitoVersion"
 }
 
-jacocoCoverage {
-    reportThreshold 0.7
-
-    // Jacoco sees extra branches when using try-with-resources
-    // See https://github.com/jacoco/jacoco/issues/82
-    reportThreshold 0.6, BRANCH
-}

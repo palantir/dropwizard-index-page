@@ -54,11 +54,11 @@ public final class IndexPageServlet extends DefaultServlet {
         }
 
         ImmutableMap<String, String> templateContext = ImmutableMap.of(BASE_URL, slashedContextPath);
-        Optional<URL> indexPageResource = tryGetResource(indexPagePath);
-        if (indexPageResource.isPresent()) {
-            indexPage = new ClasspathIndexPage(templateContext, indexPageResource.get());
+        File indexPageFile = new File(indexPagePath);
+        if (!indexPageFile.isFile()) {
+            indexPage = new ClasspathIndexPage(templateContext, getResourcePath(indexPagePath));
         } else {
-            indexPage = new FileSystemIndexPage(templateContext, new File(indexPagePath));
+            indexPage = new FileSystemIndexPage(templateContext, indexPageFile);
         }
     }
 
@@ -79,11 +79,11 @@ public final class IndexPageServlet extends DefaultServlet {
         }
     }
 
-    private static Optional<URL> tryGetResource(String resourcePath) {
+    private static URL getResourcePath(String resourcePath) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = IndexPageServlet.class.getClassLoader();
         }
-        return Optional.fromNullable(loader.getResource(resourcePath));
+        return loader.getResource(resourcePath);
     }
 }
